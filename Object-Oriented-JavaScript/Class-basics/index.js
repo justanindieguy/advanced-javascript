@@ -44,6 +44,17 @@ class ShyTriangle extends Triangle {
   }
 }
 
+class ColorTriangle extends Triangle {
+  constructor(a, b, color) {
+    super(a, b);
+    this.color = color || 'red';
+  }
+
+  describe() {
+    return `Area is ${this.getArea()}. Color is ${this.color}!`;
+  }
+}
+
 let myTriangle = new Triangle(3, 4); // "instantiation"
 
 // Can still add/look at arbitrary properties
