@@ -34,6 +34,16 @@ class Triangle {
   }
 }
 
+class ShyTriangle extends Triangle {
+  describe() {
+    return '(runs and hides)';
+  }
+
+  beShy() {
+    return 'I am shy!';
+  }
+}
+
 let myTriangle = new Triangle(3, 4); // "instantiation"
 
 // Can still add/look at arbitrary properties
