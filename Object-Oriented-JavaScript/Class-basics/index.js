@@ -27,6 +27,11 @@ class Triangle {
   getHypotenuse() {
     return Math.sqrt(this.a ** 2 + this.b ** 2);
   }
+
+  describe() {
+    // Accessing other instance methods
+    return `Area is ${this.getArea()} and hypotenuse is ${this.getHypotenuse()}`;
+  }
 }
 
 let myTriangle = new Triangle(3, 4); // "instantiation"
@@ -34,9 +39,7 @@ let myTriangle = new Triangle(3, 4); // "instantiation"
 // Can still add/look at arbitrary properties
 myTriangle.c = 'blah';
 
-console.log('Area:', myTriangle.getArea()); // 6
-console.log('Hypotenuse:', myTriangle.getHypotenuse()); // 5
+console.log(myTriangle.describe()); // 6
 
 let newTriangle = new Triangle(5, 12);
-console.log('Area:', newTriangle.getArea()); // 6
-console.log('Hypotenuse:', newTriangle.getHypotenuse()); // 5
+console.log(newTriangle.describe()); // 6
