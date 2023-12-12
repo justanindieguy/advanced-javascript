@@ -12,12 +12,35 @@ class Game {
   currPlayer = 1; // active player: 1 or 2
   board = []; // array of rows, each ow is array of cells (board[y][x])
   // (board[5][0] would be the bottom-left spot on the board)
+  gameOver = false;
+
+  static DEFAULT_WIDTH = 7;
+  static DEFAULT_HEIGHT = 6;
+  static startBtn = document.getElementById('start-btn');
 
   constructor(width, height) {
+    if (typeof width !== 'number' || width <= 0 || !Number.isFinite(width)) {
+      throw new Error('Invalid width!');
+    }
+
+    if (typeof height !== 'number' || height <= 0 || !Number.isFinite(height)) {
+      throw new Error('Invalid height!');
+    }
+
     this.width = width;
     this.height = height;
     this.makeBoard();
     this.makeHtmlBoard();
+  }
+
+  static {
+    /** Start game when "Start Game" button is clicked */
+    this.startBtn.addEventListener('click', () => this.startGame());
+  }
+
+  static startGame() {
+    document.getElementById('board').innerHTML = '';
+    new Game(Game.DEFAULT_WIDTH, Game.DEFAULT_HEIGHT);
   }
 
   /** makeBoard: fill in global `board`:
@@ -148,11 +171,16 @@ class Game {
 
   /** endGame: announce game end */
   endGame(msg) {
+    this.gameOver = true;
     alert(msg);
   }
 
   /** handleClick: handle click of column top to play piece */
   handleClick(evt) {
+    if (this.gameOver) {
+      return;
+    }
+
     // get x from ID of clicked cell
     const x = Number(evt.target.id.slice('top-'.length));
 
@@ -183,6 +211,3 @@ class Game {
 
 const WIDTH = 7;
 const HEIGHT = 6;
-
-/** Start game. */
-new Game(WIDTH, HEIGHT);
