@@ -1,5 +1,21 @@
 'use strict';
 
+class Player {
+  color = '';
+  playerNum = 0;
+  static playerCount = 0;
+
+  constructor(color) {
+    if (typeof color !== 'string' || !color) {
+      throw new Error('Invalid color!');
+    }
+
+    Player.playerCount += 1;
+    this.color = color;
+    this.playerNum = Player.playerCount;
+  }
+}
+
 /** Connect Four
  *
  * Player 1 and 2 alternate turns. On each turn, a piece is dropped down a
@@ -7,18 +23,17 @@
  * board fills (tie)
  */
 class Game {
+  players = [];
+  currPlayer; // active player: 1 or 2
   width = 0;
   height = 0;
-  currPlayer = 1; // active player: 1 or 2
   board = []; // array of rows, each ow is array of cells (board[y][x])
   // (board[5][0] would be the bottom-left spot on the board)
   gameOver = false;
 
-  static DEFAULT_WIDTH = 7;
-  static DEFAULT_HEIGHT = 6;
   static startBtn = document.getElementById('start-btn');
 
-  constructor(width, height) {
+  constructor(p1, p2, width = 7, height = 6) {
     if (typeof width !== 'number' || width <= 0 || !Number.isFinite(width)) {
       throw new Error('Invalid width!');
     }
@@ -27,6 +42,8 @@ class Game {
       throw new Error('Invalid height!');
     }
 
+    this.players = [p1, p2];
+    this.currPlayer = p1;
     this.width = width;
     this.height = height;
     this.makeBoard();
@@ -35,12 +52,16 @@ class Game {
 
   static {
     /** Start game when "Start Game" button is clicked */
-    this.startBtn.addEventListener('click', () => this.startGame());
+    this.startBtn.addEventListener('click', (evt) => this.startGame(evt));
   }
 
-  static startGame() {
-    document.getElementById('board').innerHTML = '';
-    new Game(Game.DEFAULT_WIDTH, Game.DEFAULT_HEIGHT);
+  static startGame(evt) {
+    evt.preventDefault();
+
+    Player.playerCount = 0;
+    const p1 = new Player(document.getElementById('p1-color').value);
+    const p2 = new Player(document.getElementById('p2-color').value);
+    new Game(p1, p2);
   }
 
   /** makeBoard: fill in global `board`:
@@ -56,6 +77,9 @@ class Game {
   /** makeHtmlBoard: make HTML table and row of column tops. */
   makeHtmlBoard() {
     const htmlBoard = document.getElementById('board');
+
+    // reset the board
+    htmlBoard.innerHTML = '';
 
     const top = document.createElement('tr');
     top.setAttribute('id', 'column-top');
@@ -102,7 +126,8 @@ class Game {
   placeInTable(y, x) {
     const piece = document.createElement('div');
     piece.classList.add('piece');
-    piece.classList.add(`p${this.currPlayer}`);
+    piece.classList.add(`p-${this.currPlayer.playerNum}`);
+    piece.style.backgroundColor = this.currPlayer.color;
 
     const spot = document.getElementById(`c-${y}-${x}`);
     spot.append(piece);
@@ -196,7 +221,7 @@ class Game {
 
     // check for win
     if (this.checkForWin()) {
-      return this.endGame(`Player ${this.currPlayer} won!`);
+      return this.endGame(`Player ${this.currPlayer.playerNum} won!`);
     }
 
     // check for tie: if top row is filled, board is filled
@@ -205,9 +230,7 @@ class Game {
     }
 
     // switch players
-    this.currPlayer = this.currPlayer === 1 ? 2 : 1;
+    this.currPlayer =
+      this.currPlayer === this.players[0] ? this.players[1] : this.players[0];
   }
 }
-
-const WIDTH = 7;
-const HEIGHT = 6;
