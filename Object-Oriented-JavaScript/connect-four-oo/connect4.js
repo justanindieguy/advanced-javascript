@@ -52,12 +52,15 @@ class Game {
 
   static {
     /** Start game when "Start Game" button is clicked */
-    this.startBtn.addEventListener('click', (evt) => this.startGame(evt));
+    this.startBtn.addEventListener('click', (evt) => {
+      evt.preventDefault();
+      this.startGame();
+    });
+
+    this.startGame();
   }
 
-  static startGame(evt) {
-    evt.preventDefault();
-
+  static startGame() {
     Player.playerCount = 0;
     const p1 = new Player(document.getElementById('p1-color').value);
     const p2 = new Player(document.getElementById('p2-color').value);
