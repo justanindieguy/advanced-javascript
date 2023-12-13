@@ -128,8 +128,8 @@ class Game {
   /** placeInTable: update DOM to place piece into HTML table of board */
   placeInTable(y, x) {
     const piece = document.createElement('div');
-    piece.classList.add('piece');
-    piece.classList.add(`p-${this.currPlayer.playerNum}`);
+    piece.classList.add('piece', 'm-auto', 'p-0', 'd-block');
+    piece.classList.add(`player-${this.currPlayer.playerNum}`);
     piece.style.backgroundColor = this.currPlayer.color;
 
     const spot = document.getElementById(`c-${y}-${x}`);
