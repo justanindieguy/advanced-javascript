@@ -136,18 +136,19 @@ class Game {
     spot.append(piece);
   }
 
-  #hasWinningCombination(cells) {
+  #hasWinningCombination(...checkForWinning) {
     // Check four cells to see if they're all color of current player
     //  - cells: list of four (y, x) cells
     //  - returns true if all are legal coordinates & all match currPlayer
-
-    return cells.every(
-      ([y, x]) =>
-        y >= 0 &&
-        y < this.height &&
-        x >= 0 &&
-        x < this.width &&
-        this.board[y][x] === this.currPlayer
+    return checkForWinning.find((cells) =>
+      cells.every(
+        ([y, x]) =>
+          y >= 0 &&
+          y < this.height &&
+          x >= 0 &&
+          x < this.width &&
+          this.board[y][x] === this.currPlayer
+      )
     );
   }
 
@@ -183,18 +184,27 @@ class Game {
         ];
 
         // find winner (only checking each win-possibility as needed)
-        if (
-          this.#hasWinningCombination(horiz) ||
-          this.#hasWinningCombination(vert) ||
-          this.#hasWinningCombination(diagDR) ||
-          this.#hasWinningCombination(diagDL)
-        ) {
-          return true;
+        const winningCells = this.#hasWinningCombination(
+          horiz,
+          vert,
+          diagDR,
+          diagDL
+        );
+
+        if (winningCells) {
+          return winningCells;
         }
       }
     }
 
-    return false;
+    return null;
+  }
+
+  highlightWinningCells(winningCells) {
+    winningCells.forEach(([y, x]) => {
+      const winningSpot = document.getElementById(`c-${y}-${x}`);
+      winningSpot.style.backgroundColor = 'gold';
+    });
   }
 
   /** endGame: announce game end */
@@ -223,7 +233,9 @@ class Game {
     this.placeInTable(y, x);
 
     // check for win
-    if (this.checkForWin()) {
+    const winningCells = this.checkForWin();
+    if (winningCells) {
+      this.highlightWinningCells(winningCells);
       return this.endGame(`Player ${this.currPlayer.playerNum} won!`);
     }
 
