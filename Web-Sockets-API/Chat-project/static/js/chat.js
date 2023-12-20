@@ -1,5 +1,7 @@
 // Open websocket connection from the browser to the server
-const socket = new WebSocket('ws://localhost:3000/chat/people');
+const urlParts = document.URL.split('/');
+const roomName = urlParts.at(-1);
+const socket = new WebSocket(`ws://localhost:3000/chat/${roomName}`);
 const username = prompt('Enter your username (no spaces):');
 
 socket.onopen = (evt) => {
