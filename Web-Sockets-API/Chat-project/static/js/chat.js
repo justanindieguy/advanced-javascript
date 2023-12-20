@@ -10,11 +10,16 @@ socket.onopen = (evt) => {
 
 socket.onmessage = (evt) => {
   const msg = JSON.parse(evt.data);
+
   if (msg.type === 'note') {
     const item = document.createElement('li');
     const text = document.createElement('i');
     text.textContent = msg.text;
     item.appendChild(text);
+    document.querySelector('#messages').appendChild(item);
+  } else if (msg.type === 'chat') {
+    const item = document.createElement('li');
+    item.innerHTML = `<b>${msg.name}:</b> ${msg.text}`;
     document.querySelector('#messages').appendChild(item);
   }
 };
@@ -28,4 +33,11 @@ socket.onclose = (evt) => {
   console.log('WEB SOCKET HAS BEEN CLOSED!');
 };
 
-// Do stuff eventually
+document.querySelector('#msg-form').addEventListener('submit', (evt) => {
+  evt.preventDefault();
+  const input = document.querySelector('#messageInput');
+  const data = { type: 'chat', text: input.value };
+  const payload = JSON.stringify(data);
+  socket.send(payload);
+  input.value = '';
+});
